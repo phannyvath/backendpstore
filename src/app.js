@@ -2,6 +2,7 @@ import express from 'express'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import cors from 'cors'
+import mongoose from 'mongoose'
 import authRoutes from './routes/auth.routes.js'
 import plantRoutes from './routes/plant.routes.js'
 import orderRoutes from './routes/order.routes.js'
@@ -27,11 +28,15 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }))
 const uploadsDir = path.join(__dirname, '..', 'public', 'uploads')
 app.use('/uploads', express.static(uploadsDir))
 
-// Health check endpoint
+// Health check endpoint - responds immediately (doesn't wait for DB)
+// This is critical for Render deployment - it checks this endpoint to verify deployment success
 app.get('/api', (req, res) => {
+  const dbStatus = mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
+  
   res.json({ 
     status: 'ok', 
     message: 'Plant Store API is running',
+    database: dbStatus,
     version: '1.0.0',
     endpoints: {
       auth: '/api/auth',
@@ -41,6 +46,11 @@ app.get('/api', (req, res) => {
       dashboard: '/api/dashboard'
     }
   })
+})
+
+// Root health check (for Render)
+app.get('/', (req, res) => {
+  res.json({ status: 'ok', message: 'Plant Store API' })
 })
 
 app.use('/api/auth', authRoutes)
