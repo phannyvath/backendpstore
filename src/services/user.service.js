@@ -31,7 +31,10 @@ export async function deleteUser(userId, adminId, adminPassword) {
   
   // Prevent admin from deleting themselves
   if (userId === adminId) {
-    return { success: false, message: 'You cannot delete your own account' }
+    return { 
+      success: false, 
+      message: `You cannot delete your own account (${admin.email}). Please log in with a different admin account to delete this user.` 
+    }
   }
   
   // Verify admin has a password hash
@@ -41,35 +44,26 @@ export async function deleteUser(userId, adminId, adminPassword) {
   }
   
   // Compare password - use EXACT same logic as login
-  // Login uses: comparePassword(password, user.password) where password is passed as-is
-  // But frontend trims before sending, so we'll try both trimmed and untrimmed
+  // Login: comparePassword(password, user.password) where password comes directly from req.body (no trimming)
+  // Now frontend also doesn't trim, so we match login exactly
   try {
-    const passwordToCheck = String(adminPassword || '')
-    if (!passwordToCheck) return { success: false, message: 'Password is required' }
+    if (!adminPassword) return { success: false, message: 'Password is required' }
     
     // Debug: Log comparison attempt (don't log actual password)
     console.log('🔐 Password verification for delete:', {
       adminEmail: admin.email,
       adminId: admin.id,
-      passwordLength: passwordToCheck.length,
-      passwordLengthTrimmed: passwordToCheck.trim().length,
+      targetUserEmail: user.email,
+      targetUserId: user.id,
+      passwordLength: String(adminPassword).length,
       hasPasswordHash: !!admin.password,
       passwordHashFormat: admin.password?.substring(0, 7), // $2b$10 or similar
     })
     
-    // Try comparison with password as-is (same as login)
-    let isValid = await comparePassword(passwordToCheck, admin.password)
-    console.log('✅ Password comparison (as-is) result:', isValid)
-    
-    // If that fails, try trimmed version (frontend sends trimmed)
-    if (!isValid) {
-      const trimmedPassword = passwordToCheck.trim()
-      if (trimmedPassword !== passwordToCheck || trimmedPassword.length > 0) {
-        console.log('🔄 Trying password comparison with trimmed version...')
-        isValid = await comparePassword(trimmedPassword, admin.password)
-        console.log('✅ Password comparison (trimmed) result:', isValid)
-      }
-    }
+    // IMPORTANT: Compare against the LOGGED-IN admin's password (nono@gmail.com), not the target user
+    // Use EXACT same comparison as login - pass password directly without modification
+    const isValid = await comparePassword(adminPassword, admin.password)
+    console.log('✅ Password comparison result:', isValid)
     
     if (!isValid) {
       // Additional check: verify the password hash format is correct
@@ -80,7 +74,7 @@ export async function deleteUser(userId, adminId, adminPassword) {
       
       return { 
         success: false, 
-        message: 'Invalid password. Please make sure you are entering the password for the admin account you are currently logged in as (not the account you want to delete). If you just created a new admin account, try logging out and logging back in first.' 
+        message: `Invalid password for ${admin.email}. Please enter the password for the account you are currently logged in as (${admin.email}), NOT the password for ${user.email}.` 
       }
     }
   } catch (error) {

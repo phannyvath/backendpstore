@@ -51,13 +51,15 @@ export async function remove(req, res) {
     
     // Handle DELETE request body - some clients send it differently
     // Try multiple ways to get the password
+    // IMPORTANT: Don't trim here - login doesn't trim, so we need to match that behavior
     const password = req.body?.password || req.body?.data?.password || req.query?.password
-    if (!password || !String(password).trim()) {
+    if (!password || !String(password)) {
       console.error('Password missing in request:', { body: req.body, query: req.query })
       return error(res, 'Password is required for confirmation', 400)
     }
     
-    const result = await userService.deleteUser(req.params.id, req.user.id, String(password).trim())
+    // Pass password as-is (no trimming) to match login behavior exactly
+    const result = await userService.deleteUser(req.params.id, req.user.id, password)
     if (!result.success) return error(res, result.message, 400)
     return success(res, { deleted: true })
   } catch (e) {
