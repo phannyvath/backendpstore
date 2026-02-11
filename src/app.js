@@ -12,11 +12,33 @@ import { errorHandler } from './middlewares/error.middleware.js'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const app = express()
 
-app.use(cors({ origin: true, credentials: true }))
+// CORS configuration - allow all origins for flexibility
+// In production, you can restrict to specific domains:
+// origin: ['https://your-frontend.vercel.app', 'http://localhost:5173']
+app.use(cors({ 
+  origin: true, // Allow all origins (you can restrict this in production)
+  credentials: true 
+}))
 app.use(express.json({ limit: '10mb' }))
 
 const uploadsDir = path.join(__dirname, '..', 'public', 'uploads')
 app.use('/uploads', express.static(uploadsDir))
+
+// Health check endpoint
+app.get('/api', (req, res) => {
+  res.json({ 
+    status: 'ok', 
+    message: 'Plant Store API is running',
+    version: '1.0.0',
+    endpoints: {
+      auth: '/api/auth',
+      plants: '/api/plants',
+      orders: '/api/orders',
+      users: '/api/users',
+      dashboard: '/api/dashboard'
+    }
+  })
+})
 
 app.use('/api/auth', authRoutes)
 app.use('/api/plants', plantRoutes)

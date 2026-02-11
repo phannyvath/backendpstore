@@ -7,12 +7,14 @@ async function startServer() {
     // Connect to MongoDB
     await connectDB()
     
-    // Start server
-    app.listen(env.port, () => {
-      console.log(`Plant Store API running at http://localhost:${env.port}`)
+    // Start server - use PORT from environment (Render provides this) or default to 3000
+    const port = process.env.PORT || env.port
+    app.listen(port, '0.0.0.0', () => {
+      console.log(`✅ Plant Store API running on port ${port}`)
+      console.log(`📍 Health check: http://localhost:${port}/api`)
     })
   } catch (error) {
-    console.error('Failed to start server:', error)
+    console.error('❌ Failed to start server:', error)
     process.exit(1)
   }
 }
