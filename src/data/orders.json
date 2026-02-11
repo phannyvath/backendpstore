@@ -1,0 +1,25 @@
+[
+  {
+    "id": "d431397b-3498-46e7-b157-0f8813530deb",
+    "userId": "99cbca4e-6bcf-49bb-9621-63434ce87c13",
+    "items": [
+      {
+        "plantId": "3",
+        "quantity": 11,
+        "price": 18.99,
+        "name": "Lavender"
+      }
+    ],
+    "total": 208.89,
+    "status": "delivered",
+    "createdAt": "2026-02-11T07:34:10.593Z",
+    "phone": "0715562678",
+    "socialMedia": [
+      {
+        "type": "facebook",
+        "link": "https://www.facebook.com/nyvath.nyvath/",
+        "imageUrl": null
+      }
+    ]
+  }
+]

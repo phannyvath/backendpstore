@@ -1,0 +1,30 @@
+[
+  {
+    "id": "admin-1",
+    "email": "admin@forest.com",
+    "password": "$2b$10$RhOeUZrICR.ifvKrHRjwMep1OmxvK4DuM0JlDb/AF9YMi2.3dTZEC",
+    "role": "admin",
+    "name": "Admin"
+  },
+  {
+    "id": "client-1",
+    "email": "client@forest.com",
+    "password": "$2b$10$7Ivp5Lbtaeb8uha16g.v9.zfuoCBft2CzxhG8ExPHwNL2Jf9ns3kq",
+    "role": "client",
+    "name": "Client"
+  },
+  {
+    "id": "99cbca4e-6bcf-49bb-9621-63434ce87c13",
+    "email": "nyvathnyvath@gmail.com",
+    "password": "$2b$10$bh39qjZuhpVPbQsJFAbohuy.D3VpZg4OEOXQPbwDSUAlCufbnb0W6",
+    "role": "client",
+    "name": "nyvath"
+  },
+  {
+    "id": "00720061-8a77-4ddb-8194-5f33d8790b0d",
+    "email": "long123@gmail.com",
+    "password": "$2b$10$NXyutD51cK7uXLMJzNMjXu73Ry/aZi5Vmw/6aTicW9zKeRGHXYwHm",
+    "role": "client",
+    "name": "long"
+  }
+]

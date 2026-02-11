@@ -1,0 +1,106 @@
+[
+  {
+    "id": "1",
+    "name": "Monstera Deliciosa",
+    "category": "Indoor",
+    "price": 34.99,
+    "image": "https://images.unsplash.com/photo-1614594975525-e45190c55d0b?w=600&h=600&fit=crop",
+    "care": {
+      "water": "Moderate — water when top 2\" of soil is dry",
+      "sunlight": "Bright indirect light",
+      "level": "Easy"
+    },
+    "description": "A tropical staple with iconic split leaves. Purifies air and thrives in indirect light."
+  },
+  {
+    "id": "2",
+    "name": "Peace Lily",
+    "category": "Indoor",
+    "price": 24.99,
+    "image": "https://images.unsplash.com/photo-1593691509543-c55fb32d8de9?w=600&h=600&fit=crop",
+    "care": {
+      "water": "Keep soil lightly moist",
+      "sunlight": "Low to medium indirect light",
+      "level": "Easy"
+    },
+    "description": "Elegant white blooms and glossy leaves. Tolerates low light and cleans the air."
+  },
+  {
+    "id": "3",
+    "name": "Lavender",
+    "category": "Herbs",
+    "price": 18.99,
+    "image": "https://images.unsplash.com/photo-1499002238440-d264edd596ec?w=600&h=600&fit=crop",
+    "care": {
+      "water": "Light watering; let soil dry between",
+      "sunlight": "Full sun (6+ hours)",
+      "level": "Easy"
+    },
+    "description": "Fragrant purple spikes. Perfect for pots, borders, and calming aromas."
+  },
+  {
+    "id": "4",
+    "name": "Fiddle Leaf Fig",
+    "category": "Indoor",
+    "price": 49.99,
+    "image": "https://images.unsplash.com/photo-1614594895304-fe7116ac3b19?w=600&h=600&fit=crop",
+    "care": {
+      "water": "Water when topsoil is dry",
+      "sunlight": "Bright indirect light",
+      "level": "Moderate"
+    },
+    "description": "Statement indoor tree with large, violin-shaped leaves."
+  },
+  {
+    "id": "5",
+    "name": "Japanese Maple",
+    "category": "Trees",
+    "price": 79.99,
+    "image": "https://images.unsplash.com/photo-1597848212624-a19eb35e2651?w=600&h=600&fit=crop",
+    "care": {
+      "water": "Regular, keep soil moist",
+      "sunlight": "Partial sun; shelter from harsh afternoon sun",
+      "level": "Moderate"
+    },
+    "description": "Graceful foliage in red and gold. Ideal for pots or garden focal point."
+  },
+  {
+    "id": "6",
+    "name": "Basil",
+    "category": "Herbs",
+    "price": 12.99,
+    "image": "https://images.unsplash.com/photo-1618375569909-3c8616cf7733?w=600&h=600&fit=crop",
+    "care": {
+      "water": "Keep soil moist, good drainage",
+      "sunlight": "Full sun (6+ hours)",
+      "level": "Easy"
+    },
+    "description": "Classic culinary herb. Grow on a sunny windowsill or outdoors."
+  },
+  {
+    "id": "7",
+    "name": "Hydrangea",
+    "category": "Outdoor",
+    "price": 39.99,
+    "image": "https://images.unsplash.com/photo-1582794543139-8ac9c0bc7890?w=600&h=600&fit=crop",
+    "care": {
+      "water": "Regular watering; keep soil moist",
+      "sunlight": "Morning sun, afternoon shade",
+      "level": "Moderate"
+    },
+    "description": "Big, colorful blooms in blue, pink, or white. A garden favorite."
+  },
+  {
+    "id": "8",
+    "name": "Snake Plant",
+    "category": "Indoor",
+    "price": 22.99,
+    "image": "https://images.unsplash.com/photo-1593691509543-c55fb32d8de9?w=600&h=600&fit=crop",
+    "care": {
+      "water": "Low — allow soil to dry between waterings",
+      "sunlight": "Low to bright indirect",
+      "level": "Easy"
+    },
+    "description": "Nearly indestructible. Great for bedrooms and low-light spots."
+  }
+]
