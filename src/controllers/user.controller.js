@@ -66,6 +66,43 @@ export async function remove(req, res) {
   }
 }
 
+export async function verifyPassword(req, res) {
+  try {
+    const { password } = req.body
+    if (!password) return error(res, 'Password is required', 400)
+    
+    const admin = await userRepo.findById(req.user.id)
+    if (!admin) return error(res, 'User not found', 404)
+    
+    const { comparePassword } = await import('../utils/password.js')
+    
+    // Test both trimmed and untrimmed (same as login)
+    const isValid = await comparePassword(password, admin.password)
+    const isValidTrimmed = await comparePassword(password.trim(), admin.password)
+    
+    console.log('Password verification test:', {
+      adminEmail: admin.email,
+      passwordLength: password.length,
+      isValid: isValid,
+      isValidTrimmed: isValidTrimmed,
+      passwordHashFormat: admin.password?.substring(0, 7),
+    })
+    
+    return success(res, { 
+      valid: isValid || isValidTrimmed,
+      message: (isValid || isValidTrimmed) ? 'Password is correct' : 'Password is incorrect',
+      details: {
+        isValid,
+        isValidTrimmed,
+        passwordLength: password.length,
+      }
+    })
+  } catch (e) {
+    console.error('Password verification error:', e)
+    return error(res, e.message || 'Password verification failed', 500)
+  }
+}
+
 export async function createByAdmin(req, res) {
   const { email, password, name, role } = req.body
   if (!email || !password) return error(res, 'Email and password are required', 400)

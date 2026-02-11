@@ -7,6 +7,7 @@ const router = Router()
 router.get('/', auth, adminOnly, userController.list)
 router.post('/block', auth, adminOnly, userController.block)
 router.post('/unblock', auth, adminOnly, userController.unblock)
+router.post('/verify-password', auth, userController.verifyPassword) // Test endpoint to verify password
 router.delete('/:id', auth, adminOnly, userController.remove)
 router.post('/:id/delete', auth, adminOnly, userController.remove) // Alternative route using POST
 router.post('/create', auth, adminOnly, userController.createByAdmin)

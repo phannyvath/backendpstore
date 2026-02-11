@@ -34,25 +34,63 @@ export async function deleteUser(userId, adminId, adminPassword) {
     return { success: false, message: 'You cannot delete your own account' }
   }
   
-  // Trim password to handle any whitespace issues
-  const trimmedPassword = String(adminPassword || '').trim()
-  if (!trimmedPassword) return { success: false, message: 'Password is required' }
-  
   // Verify admin has a password hash
   if (!admin.password || typeof admin.password !== 'string') {
     console.error('Admin user has invalid password hash:', admin.email)
     return { success: false, message: 'Admin account error - password verification failed' }
   }
   
-  // Compare password
+  // Compare password - use EXACT same logic as login
+  // Login uses: comparePassword(password, user.password) where password is passed as-is
+  // But frontend trims before sending, so we'll try both trimmed and untrimmed
   try {
-    const isValid = await comparePassword(trimmedPassword, admin.password)
+    const passwordToCheck = String(adminPassword || '')
+    if (!passwordToCheck) return { success: false, message: 'Password is required' }
+    
+    // Debug: Log comparison attempt (don't log actual password)
+    console.log('🔐 Password verification for delete:', {
+      adminEmail: admin.email,
+      adminId: admin.id,
+      passwordLength: passwordToCheck.length,
+      passwordLengthTrimmed: passwordToCheck.trim().length,
+      hasPasswordHash: !!admin.password,
+      passwordHashFormat: admin.password?.substring(0, 7), // $2b$10 or similar
+    })
+    
+    // Try comparison with password as-is (same as login)
+    let isValid = await comparePassword(passwordToCheck, admin.password)
+    console.log('✅ Password comparison (as-is) result:', isValid)
+    
+    // If that fails, try trimmed version (frontend sends trimmed)
     if (!isValid) {
-      return { success: false, message: 'Invalid password. Please verify you are entering the correct password for your admin account.' }
+      const trimmedPassword = passwordToCheck.trim()
+      if (trimmedPassword !== passwordToCheck || trimmedPassword.length > 0) {
+        console.log('🔄 Trying password comparison with trimmed version...')
+        isValid = await comparePassword(trimmedPassword, admin.password)
+        console.log('✅ Password comparison (trimmed) result:', isValid)
+      }
+    }
+    
+    if (!isValid) {
+      // Additional check: verify the password hash format is correct
+      if (!admin.password.startsWith('$2')) {
+        console.error('❌ Invalid password hash format for admin:', admin.email)
+        return { success: false, message: 'Admin account password error. The password hash is invalid. Please contact support.' }
+      }
+      
+      return { 
+        success: false, 
+        message: 'Invalid password. Please make sure you are entering the password for the admin account you are currently logged in as (not the account you want to delete). If you just created a new admin account, try logging out and logging back in first.' 
+      }
     }
   } catch (error) {
-    console.error('Password comparison error:', error)
-    return { success: false, message: 'Password verification failed. Please try again.' }
+    console.error('❌ Password comparison error:', error)
+    console.error('Error details:', {
+      message: error.message,
+      stack: error.stack,
+      adminEmail: admin.email,
+    })
+    return { success: false, message: `Password verification failed: ${error.message}` }
   }
   
   await userRepo.remove(userId)
