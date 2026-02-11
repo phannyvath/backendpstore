@@ -39,11 +39,31 @@ export async function unblock(req, res) {
 }
 
 export async function remove(req, res) {
-  const { password } = req.body
-  if (!password) return error(res, 'Password is required for confirmation', 400)
-  const result = await userService.deleteUser(req.params.id, req.user.id, password)
-  if (!result.success) return error(res, result.message, 400)
-  return success(res, { deleted: true })
+  try {
+    // Debug: Log request details
+    console.log('Delete user request:', {
+      userId: req.params.id,
+      adminId: req.user.id,
+      body: req.body,
+      method: req.method,
+      contentType: req.headers['content-type'],
+    })
+    
+    // Handle DELETE request body - some clients send it differently
+    // Try multiple ways to get the password
+    const password = req.body?.password || req.body?.data?.password || req.query?.password
+    if (!password || !String(password).trim()) {
+      console.error('Password missing in request:', { body: req.body, query: req.query })
+      return error(res, 'Password is required for confirmation', 400)
+    }
+    
+    const result = await userService.deleteUser(req.params.id, req.user.id, String(password).trim())
+    if (!result.success) return error(res, result.message, 400)
+    return success(res, { deleted: true })
+  } catch (e) {
+    console.error('Delete user controller error:', e)
+    return error(res, e.message || 'Failed to delete user', 500)
+  }
 }
 
 export async function createByAdmin(req, res) {

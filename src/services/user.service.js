@@ -26,10 +26,34 @@ export async function deleteUser(userId, adminId, adminPassword) {
   
   // Verify admin password
   const admin = await userRepo.findById(adminId)
-  if (!admin || admin.role !== 'admin') return { success: false, message: 'Unauthorized' }
+  if (!admin) return { success: false, message: 'Admin user not found' }
+  if (admin.role !== 'admin') return { success: false, message: 'Unauthorized - admin access required' }
   
-  const isValid = await comparePassword(adminPassword, admin.password)
-  if (!isValid) return { success: false, message: 'Invalid password' }
+  // Prevent admin from deleting themselves
+  if (userId === adminId) {
+    return { success: false, message: 'You cannot delete your own account' }
+  }
+  
+  // Trim password to handle any whitespace issues
+  const trimmedPassword = String(adminPassword || '').trim()
+  if (!trimmedPassword) return { success: false, message: 'Password is required' }
+  
+  // Verify admin has a password hash
+  if (!admin.password || typeof admin.password !== 'string') {
+    console.error('Admin user has invalid password hash:', admin.email)
+    return { success: false, message: 'Admin account error - password verification failed' }
+  }
+  
+  // Compare password
+  try {
+    const isValid = await comparePassword(trimmedPassword, admin.password)
+    if (!isValid) {
+      return { success: false, message: 'Invalid password. Please verify you are entering the correct password for your admin account.' }
+    }
+  } catch (error) {
+    console.error('Password comparison error:', error)
+    return { success: false, message: 'Password verification failed. Please try again.' }
+  }
   
   await userRepo.remove(userId)
   return { success: true }
